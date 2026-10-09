@@ -20,7 +20,7 @@ jobs:
           env:
             SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           run: | 
-          echo "$SSH_PRIVATE_KEY" > $HOME/deploy_key chmod 600 $HOME/deploy_key
+          mkdir -p ~/.ssh echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa chmod 600 ~/.ssh id_rsa ssh-keyscan matthew-frederick.cesa.takima.school >> ~/.ssh/known_hosts
 
                 
         - name: Deploiement Ansible
