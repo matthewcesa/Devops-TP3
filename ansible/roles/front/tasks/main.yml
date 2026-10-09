@@ -1,0 +1,10 @@
+- name: Run front
+  community.docker.docker_container:
+    name: "front"
+    image: "eucko/tp-devops-front"
+    pull: always
+    restart_policy: always
+    networks:
+      - name: app-network
+    vars:
+      ansible_python_interpreter: /opt/docker_venv/bin/python
