@@ -21,7 +21,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan matthew-frederick.cesa.takima.school >> ~/.ssh/known_hosts
+
 
       - name: Deploiement Ansible
         working-directory: ansible
