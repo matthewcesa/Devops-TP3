@@ -2,34 +2,30 @@ name: Deploy
 
 on:
   push:
-    branches: main
+    branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-        - name : checkout repositories 
-          uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-                
-        - name: Install Ansible
-          run: pip install ansible
+      - name: Install Ansible
+        run: pip install ansible
 
-                
-        - name: SSH key
-          env:
-            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          run: | 
-            mkdir -p ~/.ssh
-            echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa 
-            chmod 600 ~/.ssh/id_rsa
-            ssh-keyscan matthew-frederick.cesa.takima.school >> ~/.ssh/known_hosts
+      - name: SSH key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan matthew-frederick.cesa.takima.school >> ~/.ssh/known_hosts
 
-                
-        - name: Deploiement Ansible
-          working-directory: ansible
-          env:
-              ANSIBLE_HOST_KEY_CHECKING: "False"
-              DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-          run: ansible-playbook -i inventories/setup.yml playbook.yml --private-key ~/.ssh/id_rsa -u admin -b
-     
+      - name: Deploiement Ansible
+        working-directory: ansible
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: ansible-playbook -i inventories/setup.yml playbook.yml --private-key ~/.ssh/id_rsa -u admin -b
