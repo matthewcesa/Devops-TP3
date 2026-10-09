@@ -60,7 +60,7 @@ ansible-playbook -i ansible/inventories/setup.yml ansible/playbook.yml --ask-bec
 ## 3-3 Documentez la configuration de vos tâches docker_container
 
 Les rôles `database`, `app` et `proxy` utilisent le module `community.docker.docker_container` pour déclarer les conteneurs. Chaque tâche fournit un nom de conteneur, une image Docker, `pull: true` pour récupérer l'image avant son lancement, et `restart_policy: always` pour redémarrer automatiquement le conteneur.
-
+     
 - **Base de données** (`ansible/roles/database/tasks/main.yml`) : le conteneur `{{ db_container }}` utilise l'image `eucko/tp-devops-database`. Les variables `POSTGRES_DB`, `POSTGRES_USER` et `POSTGRES_PASSWORD` sont alimentées par `db_name`, `db_user` et `db_password`. Le volume nommé `db-data` conserve les données PostgreSQL dans `/var/lib/postgresql/data`.
 - **API** (`ansible/roles/app/tasks/main.yml`) : le conteneur `{{ api_container }}` utilise l'image `eucko/tp-devops-simple-api`. Ses variables d'environnement indiquent le nom de l'hôte de base de données, l'URL JDBC et les identifiants PostgreSQL, provenant de `db_container`, `db_name`, `db_user` et `db_password`.
 - **Proxy HTTP** (`ansible/roles/proxy/tasks/main.yml`) : le conteneur `httpd` utilise l'image `eucko/tp-devops-http-server` et publie le port `80` de l'hôte sur le port `80` du conteneur avec `published_ports: "80:80"`.
