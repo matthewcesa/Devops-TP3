@@ -20,7 +20,7 @@ jobs:
           env:
             SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           run: | 
-          mkdir -p ~/.ssh echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa chmod 600 ~/.ssh id_rsa ssh-keyscan matthew-frederick.cesa.takima.school >> ~/.ssh/known_hosts
+            mkdir -p ~/.ssh echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa chmod 600 ~/.ssh/id_rsa ssh-keyscan matthew-frederick.cesa.takima.school >> ~/.ssh/known_hosts
 
                 
         - name: Deploiement Ansible
@@ -28,4 +28,4 @@ jobs:
           env:
               ANSIBLE_HOST_KEY_CHECKING: "False"
               DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-              run: ansible-playbook -i inventories/setup.yml playbook.yml -e ansible_ssh_private_key_file=$HOME/deploy_key -e dockerhub_token=$DOCKERHUB_TOKEN
+              run: ansible-playbook -i inventories/setup.yml ansible/playbook.yml --private-key ~/.ssh/id_rsa -u admin -b
