@@ -31,4 +31,4 @@ jobs:
           env:
               ANSIBLE_HOST_KEY_CHECKING: "False"
               DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-          run: ansible-playbook -i inventories/setup.yml ansible/playbook.yml --private-key ~/.ssh/id_rsa -u admin -b
+          run: ansible-playbook -i inventories/setup.yml playbook.yml --private-key ~/.ssh/id_rsa -u admin -b
