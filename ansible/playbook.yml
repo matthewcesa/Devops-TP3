@@ -3,3 +3,23 @@
   become: true
   roles : 
     - docker
+- hosts: all
+  gather_facts: false
+  become: true
+  vars:
+    ansible_python_interpreter: /opt/docker_venv/bin/python
+    dockerhub_user: DOCKER_USER
+    db_image: tp-devops-correction-docker-database
+    api_image: tp-devops-correction-docker-simple-api
+    httpd_image: tp-devops-correction-docker-httpd
+    db_container: database-1
+    api_container: simple-api
+    db_name: db
+    db_user: usr
+    db_password: pwd
+    
+  roles:
+    - network
+    - database
+    - app
+    - proxy

@@ -1,0 +1,13 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/proxy
+- name: Run httpd proxy
+  community.docker.docker_container:
+    name: httpd
+    image: "eucko/tp-devops-http-server"
+    pull: true
+    restart_policy: always
+    networks:
+      - name: app-network
+    published_ports:
+      - "80:80"
