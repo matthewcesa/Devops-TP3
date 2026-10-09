@@ -66,3 +66,16 @@ Les rôles `database`, `app` et `proxy` utilisent le module `community.docker.do
 - **Proxy HTTP** (`ansible/roles/proxy/tasks/main.yml`) : le conteneur `httpd` utilise l'image `eucko/tp-devops-http-server` et publie le port `80` de l'hôte sur le port `80` du conteneur avec `published_ports: "80:80"`.
 
 Les trois conteneurs rejoignent le réseau Docker `app-network`, créé au préalable par le rôle `network`. Les variables de nom et de configuration de la base sont définies dans `ansible/playbook.yml`. Le premier play installe le SDK Docker pour Python dans `/opt/docker_venv`; le second définit `ansible_python_interpreter` vers cet environnement, nécessaire à l'exécution des modules de la collection `community.docker`.
+
+## 3-4 Sécurité du déploiement automatique des images
+
+Déployer automatiquement une image n'est pas sûr par défaut. Le workflow `.github/workflows/main.yaml` lance le playbook à chaque push sur `main`, mais ne construit ni ne publie d'image sur Docker Hub. Les rôles Ansible tirent les images indiquées dans leurs tâches avec `pull: true`. Comme aucune balise n'est précisée, Docker utilise implicitement `latest` : cette balise est modifiable et peut désigner un contenu différent d'une exécution à l'autre. Une image vulnérable, compromise ou simplement non testée pourrait donc être déployée automatiquement.
+
+Pour renforcer la sécurité :
+
+- Construire et tester les images en CI, puis effectuer une analyse de vulnérabilités avant toute publication ou mise en production.
+- Publier depuis un pipeline contrôlé, uniquement après validation du code et sur une branche ou une version protégée; ne pas publier depuis les contributions externes non approuvées.
+- Remplacer `latest` par une balise de version immuable et, pour garantir exactement le même artefact, épingler l'image par son digest (`image@sha256:...`). Promouvoir en production l'image déjà testée plutôt que de reconstruire une autre image.
+- Protéger la branche `main` avec des revues et des vérifications CI obligatoires; demander une approbation d'environnement avant un déploiement en production.
+- Stocker les clés et jetons dans les secrets GitHub, leur donner le minimum de droits et les faire tourner régulièrement. Utiliser une clé SSH dédiée au déploiement avec un compte distant aux privilèges limités.
+- Épingler les actions GitHub à un SHA de commit vérifié et réactiver la vérification des clés d'hôte SSH (`ANSIBLE_HOST_KEY_CHECKING`), actuellement désactivée dans le workflow, en configurant à l'avance les clés d'hôte attendues.
