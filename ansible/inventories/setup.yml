@@ -1,7 +1,7 @@
 all:
  vars:
    ansible_user: admin
-   ansible_ssh_private_key_file: /Users/matthew/Documents/Study/EFREI/ING2/Docker_containers/Devops-tp3/id_rsa
+   
  children:
    prod:
      hosts:
