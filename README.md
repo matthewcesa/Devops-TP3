@@ -1,5 +1,7 @@
 # Devops-TP3
 
+Ce projet automatise avec Ansible le déploiement d'une application conteneurisée sur un serveur distant. Il décrit l'installation de Docker, le réseau et les rôles de déploiement de la base de données, de l'API, du front-end et du proxy, ainsi que leur orchestration par GitHub Actions.
+
 ## Arborescence du projet
 
 ```text
