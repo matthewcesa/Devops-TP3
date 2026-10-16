@@ -8,6 +8,5 @@
       - name: app-network
     published_ports:
       - "80:80"
-    vars:
-      ansible_python_interpreter: /opt/docker_venv/bin/python
+
     

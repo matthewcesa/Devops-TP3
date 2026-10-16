@@ -29,3 +29,5 @@ jobs:
           ANSIBLE_HOST_KEY_CHECKING: "False"
           ANSIBLE_PRIVATE_KEY_FILE: "/home/runner/.ssh/id_rsa"
         run: ansible-playbook -i inventories/setup.yml playbook.yml -u admin -b
+
+      
