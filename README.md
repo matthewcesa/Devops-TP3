@@ -39,8 +39,9 @@ L'hôte doit être joignable en SSH par l'utilisateur `admin`. L'inventaire actu
 
 L'inventaire YAML `inventories/setup.yml` décrit les hôtes qu'Ansible peut administrer :
 
-- `all` est le groupe parent qui contient tous les hôtes.
+- `all` contient les variables communes à tous les hôtes.
 - `ansible_user` définit l'utilisateur SSH (`admin`).
+- `ansible_ssh_private_key_file` indique le chemin local de la clé privée SSH. Ce chemin doit être adapté à la machine qui lance Ansible; ne jamais ajouter la clé privée au dépôt.
 - Le groupe `prod` contient l'hôte `matthew-frederick.cesa.takima.school`.
 
 La commande suivante affiche l'inventaire interprété par Ansible :
@@ -50,7 +51,7 @@ ansible-inventory -i inventories/setup.yml --list
 ```
 
 ## Commandes de base
-Tester la connexion SSH vers tous les hôtes de l'inventaire :
+Depuis la racine du dépôt, tester la connexion SSH vers tous les hôtes de l'inventaire :
 
 ```sh
 ansible all -i inventories/setup.yml -m ping
@@ -82,13 +83,12 @@ Lors de la création initiale du rôle, la commande Ansible Galaxy s'exécute de
 ```sh
 ansible-galaxy init roles/docker
 ```
-Ne pas relancer cette commande si le rôle existe déjà. Les tâches d'installation des dépendances, du dépôt Docker, du paquet Docker, du SDK Python et du service Docker sont placées dans `roles/docker/tasks/main.yml`. Le playbook `playbook.yml` appelle le rôle `docker`, cible les hôtes de l'inventaire, collecte les faits et active l'élévation de privilèges. Le rôle effectue également une connexion à Docker Hub à partir des variables d'environnement `DOCKER_USER` et `DOCKER_PASSWORD` du contrôleur Ansible; les fournir par un gestionnaire de secrets, jamais dans le dépôt.
+Les tâches d'installation des dépendances, du dépôt Docker, du paquet Docker, du SDK Python et du service Docker sont placées dans `tasks/main.yml`. Le playbook `ansible/playbook.yml` appelle le rôle avec `roles: - docker`, cible les hôtes de l'inventaire, collecte les faits et active l'élévation de privilèges. Aucun gestionnaire n'étant utilisé, le répertoire `handlers/` n'est pas nécessaire au fonctionnement actuel du rôle.
 
-Vérifier la syntaxe puis lancer le playbook complet depuis `ansible/` :
+Pour appliquer le playbook et vérifier le rôle ainsi que l'installation sur les hôtes :
 
 ```sh
-ansible-playbook -i inventories/setup.yml playbook.yml --syntax-check
-ansible-playbook -i inventories/setup.yml playbook.yml --ask-become-pass
+ansible-playbook -i ansible/inventories/setup.yml ansible/playbook.yml --ask-become-pass
 ```
 
 `--ask-become-pass` demande le mot de passe sudo si l'utilisateur distant en a besoin. Pour n'exécuter que l'installation du rôle Docker, utiliser une étiquette si elle est ajoutée au play, ou exécuter le playbook d'installation correspondant; le playbook actuel lance aussi les rôles de déploiement de l'application.
@@ -143,6 +143,3 @@ Le fichier `.github/workflows/main.yaml` déclenche le déploiement à chaque pu
 ansible-playbook -i inventories/setup.yml playbook.yml -u admin -b
 ```
 
-Le secret GitHub `SSH_PRIVATE_KEY` fournit la clé SSH au job. Le workflow actuel ne construit ni ne publie les images, n'installe pas explicitement la collection `community.docker` et ne transmet pas `DOCKER_USER` / `DOCKER_PASSWORD` au playbook alors que le rôle Docker les utilise. Ces prérequis doivent être ajoutés au workflow et configurés dans les secrets GitHub pour que le déploiement soit reproductible sur un runner neuf.
-
-Le déploiement du front doit aussi être intégré au pipeline d'images : construire et tester l'image, la publier sous une version identifiable, puis lancer le playbook. Un simple push sur `main` ne met pas automatiquement à jour les images Docker Hub.
