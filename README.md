@@ -6,18 +6,18 @@
 Devops-TP3/
 ├── .github/
 │   └── workflows/
-│       └── main.yaml          # Déploiement Ansible au push sur main
+│       └── main.yaml          # deploiement Ansible au push sur main
 ├── ansible/
 │   ├── inventories/
-│   │   └── setup.yml          # Hôtes gérés par Ansible
-│   ├── playbook.yml           # Orchestration des rôles
+│   │   └── setup.yml          # hotes gérés par Ansible
+│   ├── playbook.yml           # orchestration des rôles
 │   └── roles/
-│       ├── app/tasks/main.yml       # Conteneur de l'API
-│       ├── database/tasks/main.yml  # Conteneur PostgreSQL
-│       ├── docker/tasks/main.yml    # Installation de Docker et SDK Python
-│       ├── front/tasks/main.yml     # Conteneur du front-end
-│       ├── network/tasks/main.yml   # Réseau Docker app-network
-│       └── proxy/tasks/main.yml     # Conteneur httpd
+│       ├── app/tasks/main.yml       # conteneur de l'API
+│       ├── database/tasks/main.yml  # conteneur PostgreSQL
+│       ├── docker/tasks/main.yml    # installation de Docker et SDK Python
+│       ├── front/tasks/main.yml     # conteneur du front-end
+│       ├── network/tasks/main.yml   # reseau Docker app-network
+│       └── proxy/tasks/main.yml     # conteneur httpd
 └── README.md
 ```
 
